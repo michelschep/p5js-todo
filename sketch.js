@@ -33,7 +33,8 @@ function loadTodos() {
 
 function saveTodos() {
   try {
-    localStorage.setItem('p5todos', JSON.stringify(todos));
+    const toSave = todos.filter(t => t.animState !== 'exit');
+    localStorage.setItem('p5todos', JSON.stringify(toSave));
   } catch (e) {
     // storage unavailable — silent fail
   }
@@ -41,8 +42,16 @@ function saveTodos() {
 
 function draw() {
   background(30, 30, 46);
+  removeExitedTodos();
   drawInputField();
   drawTodoList();
+}
+
+// Removes items whose exit animation has completed (animProgress ≤ 0).
+// Task 6.2 drives animProgress from 1 → 0; until then items linger until
+// their progress naturally reaches 0.
+function removeExitedTodos() {
+  todos = todos.filter(t => !(t.animState === 'exit' && t.animProgress <= 0));
 }
 
 function drawInputField() {
@@ -61,6 +70,14 @@ function toggleTodo(id) {
   todo.animState = 'complete';
   todo.animProgress = 0;
   saveTodos();
+}
+
+function deleteTodo(id) {
+  const todo = todos.find(t => t.id === id);
+  if (!todo) return;
+  todo.animState = 'exit';
+  todo.animProgress = 1; // exit animation drives 1 → 0 (task 6.2)
+  saveTodos();           // saves without this item (exit items excluded)
 }
 
 function drawTodoList() {

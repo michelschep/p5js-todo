@@ -104,6 +104,13 @@ function keyPressed() {
     inputStr = inputStr.slice(0, -1);
     return false;
   }
+  if (keyCode === ENTER) {
+    if (inputStr.trim().length > 0) {
+      addTodo(inputStr.trim());
+      inputStr = '';
+    }
+    return false;
+  }
 }
 
 function addTodo(txt) {

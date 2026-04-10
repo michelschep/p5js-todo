@@ -19,6 +19,14 @@ function loadTodos() {
   }
 }
 
+function saveTodos() {
+  try {
+    localStorage.setItem('p5todos', JSON.stringify(todos));
+  } catch (e) {
+    // storage unavailable — silent fail
+  }
+}
+
 function draw() {
   background(30, 30, 46);
   drawInputField();

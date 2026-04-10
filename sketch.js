@@ -52,9 +52,27 @@ function saveTodos() {
 function draw() {
   background(30, 30, 46);
   removeExitedTodos();
+  advanceAnimations();
   scrollOffset = constrain(scrollOffset, 0, maxScroll());
   drawInputField();
   drawTodoList();
+}
+
+// Advances animProgress each frame for animated states.
+// Task 6.1: enter  0→1 (slide in from right)
+// Task 6.2: exit   1→0 (handled there)
+// Task 6.3: complete pulse (handled there)
+function advanceAnimations() {
+  const ENTER_SPEED = 0.06; // ~17 frames ≈ 0.28 s at 60 fps
+  for (const todo of todos) {
+    if (todo.animState === 'enter') {
+      todo.animProgress = min(1, todo.animProgress + ENTER_SPEED);
+      if (todo.animProgress >= 1) {
+        todo.animState = 'idle';
+        todo.animProgress = 1;
+      }
+    }
+  }
 }
 
 // Removes items whose exit animation has completed (animProgress ≤ 0).
@@ -159,6 +177,15 @@ function drawTodoList() {
     const todo = visibleTodos[i];
     const cardY = LIST_TOP + i * (CARD_H + CARD_GAP);
 
+    // Slide-in offset for enter animation: ease-out quadratic, starts off-screen to the right
+    let enterSlide = 0;
+    if (todo.animState === 'enter') {
+      const eased = 1 - pow(1 - todo.animProgress, 2);
+      enterSlide = (1 - eased) * (width - CARD_X + 60);
+    }
+    push();
+    translate(enterSlide, 0);
+
     // Card background — brighten on hover (mouseY is screen-space; compensate for scroll)
     const hovered = mouseX >= CARD_X && mouseX <= CARD_X + cardW &&
                     mouseY + scrollOffset >= cardY  && mouseY + scrollOffset <= cardY + CARD_H;
@@ -229,6 +256,8 @@ function drawTodoList() {
       completeBtn: { x: complBtnX, y: complBtnY - scrollOffset, r: btnR },
       deleteBtn:   { x: delBtnX,   y: delBtnY   - scrollOffset, r: btnR }
     });
+
+    pop(); // close enter-slide push
   }
 
   pop();

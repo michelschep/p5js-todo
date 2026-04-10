@@ -49,6 +49,11 @@ function drawInputField() {
   // placeholder — implemented in task 3.1
 }
 
+function addTodo(txt) {
+  todos.push(createTodo(txt));
+  saveTodos();
+}
+
 function drawTodoList() {
   // placeholder — implemented in task 4.1
 }

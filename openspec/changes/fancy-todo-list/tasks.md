@@ -8,7 +8,7 @@
 ## 2. Todo Data Model
 
 - [x] 2.1 Define todo item structure: `{ id, text, status, animProgress, animState }`
-- [ ] 2.2 Implement `addTodo(text)` — creates item, sets `animState: 'enter'`, saves to localStorage
+- [x] 2.2 Implement `addTodo(text)` — creates item, sets `animState: 'enter'`, saves to localStorage
 - [ ] 2.3 Implement `toggleTodo(id)` — flips status between active/completed, sets `animState: 'complete'`, saves
 - [ ] 2.4 Implement `deleteTodo(id)` — sets `animState: 'exit'`; removes from array after animation completes
 

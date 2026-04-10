@@ -4,6 +4,18 @@ let inputStr = '';
 let scrollOffset = 0;
 let inputFocused = true;
 
+// todo item: { id: string, text: string, status: 'active'|'completed',
+//              animProgress: number (0–1), animState: 'enter'|'idle'|'complete'|'exit' }
+function createTodo(txt) {
+  return {
+    id: Date.now().toString(36) + Math.random().toString(36).slice(2, 6),
+    text: txt,
+    status: 'active',
+    animProgress: 0,
+    animState: 'enter'
+  };
+}
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
   textFont('monospace');

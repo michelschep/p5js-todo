@@ -30,7 +30,7 @@
 
 - [x] 5.1 Track `scrollOffset` variable; update via `mouseWheel()` event
 - [x] 5.2 Clamp scroll offset so list doesn't over-scroll above top or below last item
-- [ ] 5.3 Apply `translate(0, -scrollOffset)` inside draw loop for item rendering
+- [x] 5.3 Apply `translate(0, -scrollOffset)` inside draw loop for item rendering
 
 ## 6. Animations
 

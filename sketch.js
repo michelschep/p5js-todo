@@ -152,13 +152,16 @@ function drawTodoList() {
   // Skip items in exit animState (they're invisible; task 6.2 drives their removal)
   const visibleTodos = todos.filter(t => t.animState !== 'exit');
 
+  push();
+  translate(0, -scrollOffset);
+
   for (let i = 0; i < visibleTodos.length; i++) {
     const todo = visibleTodos[i];
     const cardY = LIST_TOP + i * (CARD_H + CARD_GAP);
 
-    // Card background — brighten on hover
+    // Card background — brighten on hover (mouseY is screen-space; compensate for scroll)
     const hovered = mouseX >= CARD_X && mouseX <= CARD_X + cardW &&
-                    mouseY >= cardY  && mouseY <= cardY + CARD_H;
+                    mouseY + scrollOffset >= cardY  && mouseY + scrollOffset <= cardY + CARD_H;
     noStroke();
     fill(hovered ? 62 : 49, hovered ? 62 : 49, hovered ? 82 : 68);
     rect(CARD_X, cardY, cardW, CARD_H, CARD_RADIUS);
@@ -220,12 +223,15 @@ function drawTodoList() {
     textAlign(CENTER, CENTER);
     text('\u2717', delBtnX, delBtnY);
 
+    // Store hit areas in screen-space Y (subtract scrollOffset) for mousePressed()
     todoHitAreas.push({
       id: todo.id,
-      completeBtn: { x: complBtnX, y: complBtnY, r: btnR },
-      deleteBtn:   { x: delBtnX,   y: delBtnY,   r: btnR }
+      completeBtn: { x: complBtnX, y: complBtnY - scrollOffset, r: btnR },
+      deleteBtn:   { x: delBtnX,   y: delBtnY   - scrollOffset, r: btnR }
     });
   }
+
+  pop();
 }
 
 function mousePressed() {

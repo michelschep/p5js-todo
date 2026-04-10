@@ -74,6 +74,13 @@ function advanceAnimations() {
       }
     } else if (todo.animState === 'exit') {
       todo.animProgress = max(0, todo.animProgress - EXIT_SPEED);
+    } else if (todo.animState === 'complete') {
+      const COMPLETE_SPEED = 1 / 15; // ~15 frames ≈ 0.25 s at 60 fps
+      todo.animProgress = min(1, todo.animProgress + COMPLETE_SPEED);
+      if (todo.animProgress >= 1) {
+        todo.animState = 'idle';
+        todo.animProgress = 1;
+      }
     }
   }
 }
@@ -201,8 +208,14 @@ function drawTodoList() {
     // Card background — brighten on hover (mouseY is screen-space; compensate for scroll)
     const hovered = mouseX >= CARD_X && mouseX <= CARD_X + cardW &&
                     mouseY + scrollOffset >= cardY  && mouseY + scrollOffset <= cardY + currentCardH;
+
+    // Completion pulse: sine wave 0→peak→0 over animProgress 0→1
+    const pulse = todo.animState === 'complete' ? sin(PI * todo.animProgress) : 0;
+    const baseR = hovered ? 62 : 49;
+    const baseG = hovered ? 62 : 49;
+    const baseB = hovered ? 82 : 68;
     noStroke();
-    fill(hovered ? 62 : 49, hovered ? 62 : 49, hovered ? 82 : 68);
+    fill(lerp(baseR, 137, pulse), lerp(baseG, 220, pulse), lerp(baseB, 235, pulse));
     rect(CARD_X, cardY, cardW, currentCardH, CARD_RADIUS);
 
     const btnR = 14;

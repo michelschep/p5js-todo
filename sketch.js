@@ -47,7 +47,9 @@ function setup() {
 function loadTodos() {
   try {
     const stored = localStorage.getItem('p5todos');
-    return stored ? JSON.parse(stored) : [];
+    if (!stored) return [];
+    const parsed = JSON.parse(stored);
+    return Array.isArray(parsed) ? parsed : [];
   } catch (e) {
     return [];
   }

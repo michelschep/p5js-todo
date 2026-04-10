@@ -251,6 +251,11 @@ function mousePressed() {
   }
 }
 
+function mouseWheel(event) {
+  scrollOffset += event.delta;
+  return false; // prevent browser page scroll
+}
+
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }

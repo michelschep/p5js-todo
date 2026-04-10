@@ -7,6 +7,16 @@ let inputFocused = true;
 function setup() {
   createCanvas(windowWidth, windowHeight);
   textFont('monospace');
+  todos = loadTodos();
+}
+
+function loadTodos() {
+  try {
+    const stored = localStorage.getItem('p5todos');
+    return stored ? JSON.parse(stored) : [];
+  } catch (e) {
+    return [];
+  }
 }
 
 function draw() {

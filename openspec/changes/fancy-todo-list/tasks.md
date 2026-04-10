@@ -14,7 +14,7 @@
 
 ## 3. Canvas Input Field
 
-- [ ] 3.1 Draw input field rect with rounded corners and placeholder text at top of canvas
+- [x] 3.1 Draw input field rect with rounded corners and placeholder text at top of canvas
 - [ ] 3.2 Capture characters via `keyTyped()` — append to input string when input is focused
 - [ ] 3.3 Handle Backspace in `keyPressed()` — remove last character from input string
 - [ ] 3.4 Handle Enter in `keyPressed()` — call `addTodo()` if input non-empty, then clear input string

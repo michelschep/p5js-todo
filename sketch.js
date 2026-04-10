@@ -55,7 +55,40 @@ function removeExitedTodos() {
 }
 
 function drawInputField() {
-  // placeholder — implemented in task 3.1
+  const fieldX = 40;
+  const fieldY = 24;
+  const fieldW = width - 80;
+  const fieldH = 48;
+  const radius = 12;
+
+  // Background
+  noStroke();
+  fill(49, 49, 68);
+  rect(fieldX, fieldY, fieldW, fieldH, radius);
+
+  // Cursor or placeholder
+  const displayText = inputStr.length > 0 ? inputStr : null;
+
+  textSize(16);
+  textAlign(LEFT, CENTER);
+  noStroke();
+
+  if (displayText) {
+    fill(205, 214, 244);
+    text(displayText, fieldX + 16, fieldY + fieldH / 2);
+  } else {
+    fill(108, 112, 134);
+    text('Add a new todo…', fieldX + 16, fieldY + fieldH / 2);
+  }
+
+  // Blinking cursor when focused
+  if (inputFocused && frameCount % 60 < 30) {
+    const cursorX = fieldX + 16 + (inputStr.length > 0 ? textWidth(inputStr) : 0);
+    stroke(137, 180, 250);
+    strokeWeight(2);
+    line(cursorX + 2, fieldY + 12, cursorX + 2, fieldY + fieldH - 12);
+    noStroke();
+  }
 }
 
 function addTodo(txt) {

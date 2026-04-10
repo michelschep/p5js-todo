@@ -60,7 +60,7 @@ while ($true) {
     Write-Host ""
 
     # Start de Ralph agent met de taak als prompt
-    copilot --experimental --agent ralph --prompt "implement the next task"
+    copilot --experimental --yolo --agent ralph --prompt "implement the next task"
 
     # Push na elke voltooide iteratie
     Write-Host "`n📤 Pushen..." -ForegroundColor Cyan
@@ -72,9 +72,6 @@ while ($true) {
     if ($remaining -eq 0) {
         Write-Host "`n🎉 Alle taken klaar! Volg Stap 3 in README.md om af te ronden." -ForegroundColor Green; break
     }
-
-    Write-Host "`n$remaining taak(en) resterend. Doorgaan? [Y/N] " -ForegroundColor Cyan -NoNewline
-    if ((Read-Host) -notmatch '^[Yy]') { break }
 }
 
 Write-Host "`n✅ Ralph loop klaar na $i iteratie(s)." -ForegroundColor Cyan

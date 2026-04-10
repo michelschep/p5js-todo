@@ -35,7 +35,7 @@
 ## 6. Animations
 
 - [x] 6.1 Drive `animProgress` (0→1) each frame for items in `animState: 'enter'` — slide in from right
-- [ ] 6.2 Drive `animProgress` (1→0) each frame for items in `animState: 'exit'` — fade + shrink; remove item when done
+- [x] 6.2 Drive `animProgress` (1→0) each frame for items in `animState: 'exit'` — fade + shrink; remove item when done
 - [ ] 6.3 Implement completion pulse — brief color flash over ~15 frames when `animState: 'complete'`
 
 ## 7. Empty State & Polish

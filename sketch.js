@@ -60,10 +60,11 @@ function draw() {
 
 // Advances animProgress each frame for animated states.
 // Task 6.1: enter  0→1 (slide in from right)
-// Task 6.2: exit   1→0 (handled there)
+// Task 6.2: exit   1→0 (fade + shrink)
 // Task 6.3: complete pulse (handled there)
 function advanceAnimations() {
   const ENTER_SPEED = 0.06; // ~17 frames ≈ 0.28 s at 60 fps
+  const EXIT_SPEED  = 0.08; // ~12 frames ≈ 0.20 s at 60 fps
   for (const todo of todos) {
     if (todo.animState === 'enter') {
       todo.animProgress = min(1, todo.animProgress + ENTER_SPEED);
@@ -71,6 +72,8 @@ function advanceAnimations() {
         todo.animState = 'idle';
         todo.animProgress = 1;
       }
+    } else if (todo.animState === 'exit') {
+      todo.animProgress = max(0, todo.animProgress - EXIT_SPEED);
     }
   }
 }
@@ -167,15 +170,24 @@ function drawTodoList() {
   todoHitAreas = [];
   const cardW = width - 80;
 
-  // Skip items in exit animState (they're invisible; task 6.2 drives their removal)
-  const visibleTodos = todos.filter(t => t.animState !== 'exit');
+  // Include exit items while their animation is still running
+  const visibleTodos = todos.filter(t => t.animState !== 'exit' || t.animProgress > 0);
 
   push();
   translate(0, -scrollOffset);
 
+  let currentY = LIST_TOP; // accumulated Y to support dynamic (shrinking) card heights
+
   for (let i = 0; i < visibleTodos.length; i++) {
     const todo = visibleTodos[i];
-    const cardY = LIST_TOP + i * (CARD_H + CARD_GAP);
+
+    // Exit items: shrink height and fade proportionally to animProgress
+    const exitP = todo.animState === 'exit' ? todo.animProgress : 1;
+    const currentCardH = CARD_H * exitP;
+    const cardY = currentY;
+    currentY += currentCardH + CARD_GAP * exitP;
+
+    if (todo.animState === 'exit') drawingContext.globalAlpha = exitP;
 
     // Slide-in offset for enter animation: ease-out quadratic, starts off-screen to the right
     let enterSlide = 0;
@@ -188,16 +200,16 @@ function drawTodoList() {
 
     // Card background — brighten on hover (mouseY is screen-space; compensate for scroll)
     const hovered = mouseX >= CARD_X && mouseX <= CARD_X + cardW &&
-                    mouseY + scrollOffset >= cardY  && mouseY + scrollOffset <= cardY + CARD_H;
+                    mouseY + scrollOffset >= cardY  && mouseY + scrollOffset <= cardY + currentCardH;
     noStroke();
     fill(hovered ? 62 : 49, hovered ? 62 : 49, hovered ? 82 : 68);
-    rect(CARD_X, cardY, cardW, CARD_H, CARD_RADIUS);
+    rect(CARD_X, cardY, cardW, currentCardH, CARD_RADIUS);
 
     const btnR = 14;
 
     // Complete button (✓) — left side
     const complBtnX = CARD_X + 28;
-    const complBtnY = cardY + CARD_H / 2;
+    const complBtnY = cardY + currentCardH / 2;
     noStroke();
     if (todo.status === 'completed') {
       fill(137, 180, 250); // blue-filled when done
@@ -228,20 +240,20 @@ function drawTodoList() {
       }
       displayTxt += '\u2026';
     }
-    text(displayTxt, textStartX, cardY + CARD_H / 2);
+    text(displayTxt, textStartX, cardY + currentCardH / 2);
 
     // Strikethrough for completed items
     if (todo.status === 'completed') {
       const lineW = min(textWidth(displayTxt), maxTextW);
       stroke(108, 112, 134);
       strokeWeight(1.5);
-      line(textStartX, cardY + CARD_H / 2, textStartX + lineW, cardY + CARD_H / 2);
+      line(textStartX, cardY + currentCardH / 2, textStartX + lineW, cardY + currentCardH / 2);
       noStroke();
     }
 
     // Delete button (✗) — right side
     const delBtnX = CARD_X + cardW - 24;
-    const delBtnY = cardY + CARD_H / 2;
+    const delBtnY = cardY + currentCardH / 2;
     noStroke();
     fill(74, 74, 98);
     ellipse(delBtnX, delBtnY, btnR * 2, btnR * 2);
@@ -251,13 +263,17 @@ function drawTodoList() {
     text('\u2717', delBtnX, delBtnY);
 
     // Store hit areas in screen-space Y (subtract scrollOffset) for mousePressed()
-    todoHitAreas.push({
-      id: todo.id,
-      completeBtn: { x: complBtnX, y: complBtnY - scrollOffset, r: btnR },
-      deleteBtn:   { x: delBtnX,   y: delBtnY   - scrollOffset, r: btnR }
-    });
+    // Skip exit items — they can't be interacted with while animating out
+    if (todo.animState !== 'exit') {
+      todoHitAreas.push({
+        id: todo.id,
+        completeBtn: { x: complBtnX, y: complBtnY - scrollOffset, r: btnR },
+        deleteBtn:   { x: delBtnX,   y: delBtnY   - scrollOffset, r: btnR }
+      });
+    }
 
     pop(); // close enter-slide push
+    if (todo.animState === 'exit') drawingContext.globalAlpha = 1;
   }
 
   pop();
@@ -289,8 +305,13 @@ function mousePressed() {
 
 // Returns the maximum valid scrollOffset given current todos and canvas size.
 function maxScroll() {
-  const visibleCount = todos.filter(t => t.animState !== 'exit').length;
-  const listH = visibleCount * (CARD_H + CARD_GAP) - CARD_GAP;
+  const renderTodos = todos.filter(t => t.animState !== 'exit' || t.animProgress > 0);
+  let listH = 0;
+  for (const t of renderTodos) {
+    const p = t.animState === 'exit' ? t.animProgress : 1;
+    listH += CARD_H * p + CARD_GAP * p;
+  }
+  if (listH > 0) listH -= CARD_GAP; // remove trailing gap
   const available = height - LIST_TOP - 16; // 16px bottom padding
   return max(0, listH - available);
 }

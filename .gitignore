@@ -1,0 +1,4 @@
+node_modules/
+.openspec_cache/
+openspec/.openspec_cache/
+.DS_Store

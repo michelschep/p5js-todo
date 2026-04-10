@@ -6,38 +6,6 @@
 
 ---
 
-## 🔁 Ralph Loop — Sessie-instructies
-
-Elke Copilot-sessie implementeert **precies één taak**. Niet meer.
-
-### Werkwijze
-
-1. **Orient** — Bestudeer `openspec/changes/*/proposal.md` en `openspec/changes/*/specs/` om de requirements te begrijpen.
-2. **Lees taken** — Bestudeer `openspec/changes/*/tasks.md`. Kies de meest belangrijke incomplete taak (`- [ ]`) uit een niet-gearchiveerde change.
-3. **Onderzoek** — Bestudeer relevante bestanden vóór je iets schrijft. Ga er nooit van uit dat iets nog niet geïmplementeerd is.
-4. **Implementeer** — Schrijf de minimale, werkende implementatie.
-5. **Valideer** — Open `index.html` via `npx serve .` en verifieer handmatig dat de feature werkt. Controleer ook de browser console op errors.
-6. **Update taken** — Markeer de taak als gedaan in `tasks.md` (`- [x]`). Noteer eventuele ontdekkingen.
-7. **Commit** — Formaat: `feat: <samenvatting>` + body met wat/waarom + trailer:
-   ```
-   Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>
-   ```
-8. **Stop.** De volgende sessie pakt de volgende taak.
-
-### Trigger
-
-> `"implement the next task"`
-
-### Invarianten (nooit schenden)
-
-- `9999` — Eén taak per sessie. Nooit meerdere bundelen.
-- `9998` — Nooit aannemen dat iets niet geïmplementeerd is — altijd bestaande code onderzoeken eerst.
-- `9997` — Nooit committen als er console errors zijn.
-- `9996` — Nooit onverwante code aanpassen.
-- `9995` — `tasks.md` actueel houden na elke sessie.
-
----
-
 ## 🏗️ Tech Stack
 
 - **Taal:** JavaScript (vanilla)

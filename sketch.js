@@ -52,6 +52,7 @@ function saveTodos() {
 function draw() {
   background(30, 30, 46);
   removeExitedTodos();
+  scrollOffset = constrain(scrollOffset, 0, maxScroll());
   drawInputField();
   drawTodoList();
 }
@@ -251,8 +252,17 @@ function mousePressed() {
   }
 }
 
+// Returns the maximum valid scrollOffset given current todos and canvas size.
+function maxScroll() {
+  const visibleCount = todos.filter(t => t.animState !== 'exit').length;
+  const listH = visibleCount * (CARD_H + CARD_GAP) - CARD_GAP;
+  const available = height - LIST_TOP - 16; // 16px bottom padding
+  return max(0, listH - available);
+}
+
 function mouseWheel(event) {
   scrollOffset += event.delta;
+  scrollOffset = constrain(scrollOffset, 0, maxScroll());
   return false; // prevent browser page scroll
 }
 

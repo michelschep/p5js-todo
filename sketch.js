@@ -1,3 +1,16 @@
+// Color palette — Catppuccin Mocha
+const PALETTE = {
+  background:  [30,  30,  46],   // base
+  surface:     [49,  49,  68],   // surface0  (cards, input bg)
+  surfaceHover:[62,  62,  82],   // surface0 brightened on hover
+  overlay:     [74,  74,  98],   // overlay0  (button fill)
+  muted:       [108, 112, 134],  // overlay1  (placeholder, strikethrough, empty-state)
+  text:        [205, 214, 244],  // text      (primary text)
+  accent:      [137, 180, 250],  // blue      (cursor, complete btn active)
+  danger:      [243, 139, 168],  // red       (delete icon)
+  pulseTarget: [137, 220, 235],  // teal      (completion pulse peak)
+};
+
 // Global state
 let todos = [];
 let inputStr = '';
@@ -50,7 +63,7 @@ function saveTodos() {
 }
 
 function draw() {
-  background(30, 30, 46);
+  background(...PALETTE.background);
   removeExitedTodos();
   advanceAnimations();
   scrollOffset = constrain(scrollOffset, 0, maxScroll());
@@ -101,7 +114,7 @@ function drawInputField() {
 
   // Background
   noStroke();
-  fill(49, 49, 68);
+  fill(...PALETTE.surface);
   rect(fieldX, fieldY, fieldW, fieldH, radius);
 
   // Cursor or placeholder
@@ -112,17 +125,17 @@ function drawInputField() {
   noStroke();
 
   if (displayText) {
-    fill(205, 214, 244);
+    fill(...PALETTE.text);
     text(displayText, fieldX + 16, fieldY + fieldH / 2);
   } else {
-    fill(108, 112, 134);
+    fill(...PALETTE.muted);
     text('Add a new todo…', fieldX + 16, fieldY + fieldH / 2);
   }
 
   // Blinking cursor when focused
   if (inputFocused && frameCount % 60 < 30) {
     const cursorX = fieldX + 16 + (inputStr.length > 0 ? textWidth(inputStr) : 0);
-    stroke(137, 180, 250);
+    stroke(...PALETTE.accent);
     strokeWeight(2);
     line(cursorX + 2, fieldY + 12, cursorX + 2, fieldY + fieldH - 12);
     noStroke();
@@ -211,11 +224,13 @@ function drawTodoList() {
 
     // Completion pulse: sine wave 0→peak→0 over animProgress 0→1
     const pulse = todo.animState === 'complete' ? sin(PI * todo.animProgress) : 0;
-    const baseR = hovered ? 62 : 49;
-    const baseG = hovered ? 62 : 49;
-    const baseB = hovered ? 82 : 68;
+    const [baseR, baseG, baseB] = hovered ? PALETTE.surfaceHover : PALETTE.surface;
     noStroke();
-    fill(lerp(baseR, 137, pulse), lerp(baseG, 220, pulse), lerp(baseB, 235, pulse));
+    fill(
+      lerp(baseR, PALETTE.pulseTarget[0], pulse),
+      lerp(baseG, PALETTE.pulseTarget[1], pulse),
+      lerp(baseB, PALETTE.pulseTarget[2], pulse)
+    );
     rect(CARD_X, cardY, cardW, currentCardH, CARD_RADIUS);
 
     const btnR = 14;
@@ -225,12 +240,12 @@ function drawTodoList() {
     const complBtnY = cardY + currentCardH / 2;
     noStroke();
     if (todo.status === 'completed') {
-      fill(137, 180, 250); // blue-filled when done
+      fill(...PALETTE.accent); // blue-filled when done
     } else {
-      fill(74, 74, 98);
+      fill(...PALETTE.overlay);
     }
     ellipse(complBtnX, complBtnY, btnR * 2, btnR * 2);
-    fill(205, 214, 244);
+    fill(...PALETTE.text);
     textSize(13);
     textAlign(CENTER, CENTER);
     text('\u2713', complBtnX, complBtnY);
@@ -242,9 +257,9 @@ function drawTodoList() {
     textSize(16);
     textAlign(LEFT, CENTER);
     if (todo.status === 'completed') {
-      fill(108, 112, 134);
+      fill(...PALETTE.muted);
     } else {
-      fill(205, 214, 244);
+      fill(...PALETTE.text);
     }
     let displayTxt = todo.text;
     if (textWidth(displayTxt) > maxTextW) {
@@ -258,7 +273,7 @@ function drawTodoList() {
     // Strikethrough for completed items
     if (todo.status === 'completed') {
       const lineW = min(textWidth(displayTxt), maxTextW);
-      stroke(108, 112, 134);
+      stroke(...PALETTE.muted);
       strokeWeight(1.5);
       line(textStartX, cardY + currentCardH / 2, textStartX + lineW, cardY + currentCardH / 2);
       noStroke();
@@ -268,9 +283,9 @@ function drawTodoList() {
     const delBtnX = CARD_X + cardW - 24;
     const delBtnY = cardY + currentCardH / 2;
     noStroke();
-    fill(74, 74, 98);
+    fill(...PALETTE.overlay);
     ellipse(delBtnX, delBtnY, btnR * 2, btnR * 2);
-    fill(243, 139, 168); // rose accent
+    fill(...PALETTE.danger);
     textSize(13);
     textAlign(CENTER, CENTER);
     text('\u2717', delBtnX, delBtnY);
@@ -297,7 +312,7 @@ function drawTodoList() {
     const msg = 'Nothing to do \u2014 enjoy your day! \uD83C\uDF89';
     textSize(20);
     textAlign(CENTER, CENTER);
-    fill(108, 112, 134);
+    fill(...PALETTE.muted);
     noStroke();
     text(msg, width / 2, height / 2);
   }

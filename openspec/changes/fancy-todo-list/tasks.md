@@ -1,7 +1,7 @@
 ## 1. Foundation
 
 - [x] 1.1 Update `index.html`: set page title, meta tags, ensure p5.js CDN script tag is present
-- [ ] 1.2 Set up `sketch.js` skeleton: `setup()`, `draw()`, global state variables (todos array, input string, scroll offset)
+- [x] 1.2 Set up `sketch.js` skeleton: `setup()`, `draw()`, global state variables (todos array, input string, scroll offset)
 - [ ] 1.3 Implement localStorage load on startup — deserialize todos array from `localStorage` or default to `[]`
 - [ ] 1.4 Implement localStorage save helper — called on every mutation (add, complete, delete)
 

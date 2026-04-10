@@ -54,6 +54,15 @@ function addTodo(txt) {
   saveTodos();
 }
 
+function toggleTodo(id) {
+  const todo = todos.find(t => t.id === id);
+  if (!todo) return;
+  todo.status = todo.status === 'active' ? 'completed' : 'active';
+  todo.animState = 'complete';
+  todo.animProgress = 0;
+  saveTodos();
+}
+
 function drawTodoList() {
   // placeholder — implemented in task 4.1
 }

@@ -98,6 +98,14 @@ function keyTyped() {
   return false; // prevent default browser behavior (e.g. space scrolling)
 }
 
+function keyPressed() {
+  if (!inputFocused) return;
+  if (keyCode === BACKSPACE) {
+    inputStr = inputStr.slice(0, -1);
+    return false;
+  }
+}
+
 function addTodo(txt) {
   todos.push(createTodo(txt));
   saveTodos();

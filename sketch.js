@@ -155,9 +155,11 @@ function drawTodoList() {
     const todo = visibleTodos[i];
     const cardY = LIST_TOP + i * (CARD_H + CARD_GAP);
 
-    // Card background
+    // Card background — brighten on hover
+    const hovered = mouseX >= CARD_X && mouseX <= CARD_X + cardW &&
+                    mouseY >= cardY  && mouseY <= cardY + CARD_H;
     noStroke();
-    fill(49, 49, 68);
+    fill(hovered ? 62 : 49, hovered ? 62 : 49, hovered ? 82 : 68);
     rect(CARD_X, cardY, cardW, CARD_H, CARD_RADIUS);
 
     const btnR = 14;

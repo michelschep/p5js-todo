@@ -22,8 +22,8 @@
 ## 4. Todo Item Cards
 
 - [x] 4.1 Draw each todo item as a rounded-rect card with text, complete button (✓), and delete button (✗)
-- [ ] 4.2 Apply completed item style — reduced opacity + strikethrough drawn manually over text
-- [ ] 4.3 Implement hover detection — `dist()` or bounding-box check against `mouseX/mouseY`; brighten card on hover
+- [x] 4.2 Apply completed item style — reduced opacity + strikethrough drawn manually over text
+- [x] 4.3 Implement hover detection — `dist()` or bounding-box check against `mouseX/mouseY`; brighten card on hover
 - [ ] 4.4 Wire `mousePressed()` — detect clicks on complete and delete buttons per item
 
 ## 5. Scrolling

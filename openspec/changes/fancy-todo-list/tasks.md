@@ -40,6 +40,6 @@
 
 ## 7. Empty State & Polish
 
-- [ ] 7.1 Draw "Nothing to do — enjoy your day! 🎉" message centered on canvas when list is empty
+- [x] 7.1 Draw "Nothing to do — enjoy your day! 🎉" message centered on canvas when list is empty
 - [ ] 7.2 Choose and apply a consistent color palette (background, cards, accent, text) throughout
 - [ ] 7.3 Manual verification: serve with `npx serve .`, test add/complete/delete/reload/scroll/animations in browser

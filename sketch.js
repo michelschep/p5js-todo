@@ -290,6 +290,17 @@ function drawTodoList() {
   }
 
   pop();
+
+  // Empty state: shown when no non-exiting todos remain
+  const activeTodos = todos.filter(t => t.animState !== 'exit');
+  if (activeTodos.length === 0) {
+    const msg = 'Nothing to do \u2014 enjoy your day! \uD83C\uDF89';
+    textSize(20);
+    textAlign(CENTER, CENTER);
+    fill(108, 112, 134);
+    noStroke();
+    text(msg, width / 2, height / 2);
+  }
 }
 
 function mousePressed() {

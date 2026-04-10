@@ -227,6 +227,30 @@ function drawTodoList() {
   }
 }
 
+function mousePressed() {
+  // Toggle input focus: click inside input field → focus; click elsewhere → unfocus
+  const fieldX = 40;
+  const fieldY = 24;
+  const fieldW = width - 80;
+  const fieldH = 48;
+  inputFocused = mouseX >= fieldX && mouseX <= fieldX + fieldW &&
+                 mouseY >= fieldY && mouseY <= fieldY + fieldH;
+
+  // Check clicks on todo buttons
+  for (const area of todoHitAreas) {
+    const cb = area.completeBtn;
+    if (dist(mouseX, mouseY, cb.x, cb.y) <= cb.r) {
+      toggleTodo(area.id);
+      return;
+    }
+    const db = area.deleteBtn;
+    if (dist(mouseX, mouseY, db.x, db.y) <= db.r) {
+      deleteTodo(area.id);
+      return;
+    }
+  }
+}
+
 function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
 }

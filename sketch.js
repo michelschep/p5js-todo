@@ -91,6 +91,13 @@ function drawInputField() {
   }
 }
 
+function keyTyped() {
+  if (inputFocused) {
+    inputStr += key;
+  }
+  return false; // prevent default browser behavior (e.g. space scrolling)
+}
+
 function addTodo(txt) {
   todos.push(createTodo(txt));
   saveTodos();

@@ -4,6 +4,15 @@ let inputStr = '';
 let scrollOffset = 0;
 let inputFocused = true;
 
+// Hit areas rebuilt each frame so mousePressed() (task 4.4) can detect clicks
+let todoHitAreas = []; // [{ id, completeBtn:{x,y,r}, deleteBtn:{x,y,r} }]
+
+const CARD_X = 40;
+const CARD_H = 56;
+const CARD_GAP = 8;
+const CARD_RADIUS = 12;
+const LIST_TOP = 96; // px below top of canvas, clears input field
+
 // todo item: { id: string, text: string, status: 'active'|'completed',
 //              animProgress: number (0–1), animState: 'enter'|'idle'|'complete'|'exit' }
 function createTodo(txt) {
@@ -136,7 +145,84 @@ function deleteTodo(id) {
 }
 
 function drawTodoList() {
-  // placeholder — implemented in task 4.1
+  todoHitAreas = [];
+  const cardW = width - 80;
+
+  // Skip items in exit animState (they're invisible; task 6.2 drives their removal)
+  const visibleTodos = todos.filter(t => t.animState !== 'exit');
+
+  for (let i = 0; i < visibleTodos.length; i++) {
+    const todo = visibleTodos[i];
+    const cardY = LIST_TOP + i * (CARD_H + CARD_GAP);
+
+    // Card background
+    noStroke();
+    fill(49, 49, 68);
+    rect(CARD_X, cardY, cardW, CARD_H, CARD_RADIUS);
+
+    const btnR = 14;
+
+    // Complete button (✓) — left side
+    const complBtnX = CARD_X + 28;
+    const complBtnY = cardY + CARD_H / 2;
+    noStroke();
+    if (todo.status === 'completed') {
+      fill(137, 180, 250); // blue-filled when done
+    } else {
+      fill(74, 74, 98);
+    }
+    ellipse(complBtnX, complBtnY, btnR * 2, btnR * 2);
+    fill(205, 214, 244);
+    textSize(13);
+    textAlign(CENTER, CENTER);
+    text('\u2713', complBtnX, complBtnY);
+
+    // Todo text — truncate with ellipsis if it overflows
+    const textStartX = CARD_X + 56;
+    const textEndX   = CARD_X + cardW - 44;
+    const maxTextW   = textEndX - textStartX;
+    textSize(16);
+    textAlign(LEFT, CENTER);
+    if (todo.status === 'completed') {
+      fill(108, 112, 134);
+    } else {
+      fill(205, 214, 244);
+    }
+    let displayTxt = todo.text;
+    if (textWidth(displayTxt) > maxTextW) {
+      while (displayTxt.length > 0 && textWidth(displayTxt + '\u2026') > maxTextW) {
+        displayTxt = displayTxt.slice(0, -1);
+      }
+      displayTxt += '\u2026';
+    }
+    text(displayTxt, textStartX, cardY + CARD_H / 2);
+
+    // Strikethrough for completed items
+    if (todo.status === 'completed') {
+      const lineW = min(textWidth(displayTxt), maxTextW);
+      stroke(108, 112, 134);
+      strokeWeight(1.5);
+      line(textStartX, cardY + CARD_H / 2, textStartX + lineW, cardY + CARD_H / 2);
+      noStroke();
+    }
+
+    // Delete button (✗) — right side
+    const delBtnX = CARD_X + cardW - 24;
+    const delBtnY = cardY + CARD_H / 2;
+    noStroke();
+    fill(74, 74, 98);
+    ellipse(delBtnX, delBtnY, btnR * 2, btnR * 2);
+    fill(243, 139, 168); // rose accent
+    textSize(13);
+    textAlign(CENTER, CENTER);
+    text('\u2717', delBtnX, delBtnY);
+
+    todoHitAreas.push({
+      id: todo.id,
+      completeBtn: { x: complBtnX, y: complBtnY, r: btnR },
+      deleteBtn:   { x: delBtnX,   y: delBtnY,   r: btnR }
+    });
+  }
 }
 
 function windowResized() {
